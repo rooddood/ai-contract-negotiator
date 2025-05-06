@@ -1,0 +1,18 @@
+{
+    "job_description": {
+        "title": "LLM Integration Specialist",
+        "description": "Seeking a freelancer to integrate and fine-tune LLMs for a new application.",
+        "required_skills": [
+            "Python",
+            "LLMs",
+            "API Development",
+            "Cloud Platforms"
+        ],
+        "estimated_duration_weeks": 12
+    },
+    "expected_terms": {
+        "hourly_rate": 60,
+        "expected_hours_per_week": 15,
+        "budget": 12000
+    }
+}

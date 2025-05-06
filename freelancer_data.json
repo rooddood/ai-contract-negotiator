@@ -1,0 +1,39 @@
+{
+    "resume": {
+        "experience": [
+            {
+                "title": "Software Engineer",
+                "company": "Tech Inc.",
+                "years": "2020-2023",
+                "skills": [
+                    "Python",
+                    "LLMs",
+                    "APIs"
+                ]
+            },
+            {
+                "title": "Data Scientist",
+                "company": "Data Corp.",
+                "years": "2023-Present",
+                "skills": [
+                    "Machine Learning",
+                    "Data Analysis",
+                    "Cloud Computing"
+                ]
+            }
+        ],
+        "skills": [
+            "Communication",
+            "Problem-solving",
+            "Negotiation"
+        ]
+    },
+    "expected_terms": {
+        "hourly_rate": 75,
+        "expected_hours_per_week": 20,
+        "additional_expenses": {
+            "software_licenses": 50,
+            "travel": 0
+        }
+    }
+}
