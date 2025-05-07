@@ -147,57 +147,5 @@ def load_data(file_path: str) -> Dict:
     with open(file_path, 'r') as f:
         return json.load(f)
 
-def negotiate(agent: AIAgent, freelancer_data: Dict, hirer_data: Dict) -> str:
-    """
-    Uses the AI agent to suggest negotiation points.
-
-    Args:
-        agent (AIAgent): The initialized AI agent.
-        freelancer_data (Dict): The freelancer's data.
-        hirer_data (Dict): The hirer's data.
-
-    Returns:
-        str: The negotiation suggestions from the LLM.
-    """
-    prompt = f"""You are an expert contract negotiation assistant. Analyze the following information from a freelancer and a hiring person and suggest potential points of negotiation to reach a mutually agreeable contract.
-
-    Freelancer Information:
-    ```json
-    {json.dumps(freelancer_data, indent=4)}
-    ```
-
-    Hiring Person Information:
-    ```json
-    {json.dumps(hirer_data, indent=4)}
-    ```
-
-    Based on this information, identify areas where the freelancer's expectations and the hiring person's offer differ. Suggest specific and actionable negotiation points for both parties to consider. Focus on hourly rate, expected hours, additional expenses, and overall budget. Provide your response in a structured format.
-    """
-    return agent.get_response(prompt)
-
 if __name__ == "__main__":
-    # Load data from JSON files
-    try:
-        freelancer_data = load_data("freelancer_data.json")
-        hirer_data = load_data("hirer_data.json")
-    except FileNotFoundError:
-        print("Error: Make sure 'freelancer_data.json' and 'hirer_data.json' exist in the same directory.")
-        print("Please run the code that generates these files first.")
-        exit()
-
-    # Initialize the AI agent with your chosen provider and API key.
-    # IMPORTANT: Replace 'YOUR_PROVIDER' and 'YOUR_API_KEY' with your actual values.
-    #            For example:
-    #            agent = AIAgent(provider='openai', api_key='sk-...')
-    #            agent = AIAgent(provider='google', api_key='YOUR_GOOGLE_API_KEY')
-    #            agent = AIAgent(provider='anthropic', api_key='YOUR_ANTHROPIC_API_KEY')
-    #            agent = AIAgent(provider='huggingface', model_name='TheBloke/deepseek-llm-7b-chat-AWQ') # Example
-    provider = "huggingface" #  or "openai" or "google" or "anthropic"
-    api_key = None #  Not generally needed for local Hugging Face models
-    model_name = "TheBloke/deepseek-llm-7b-chat-AWQ"  #  REQUIRED for HuggingFace
-    agent = AIAgent(provider=provider, api_key=api_key, model_name=model_name)
-
-    # Initiate the negotiation process
-    negotiation_suggestions = negotiate(agent, freelancer_data, hirer_data)
-    print(f"\nNegotiation Suggestions from {provider}:")
-    print(negotiation_suggestions)
+    print("AIAgent module is ready for use.")
