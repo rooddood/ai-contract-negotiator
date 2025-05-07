@@ -55,6 +55,22 @@ class HuggingFaceAI:
         except Exception as e:
             print(f"HuggingFace transformers is not installed. This won't work! {e}")
 
+    def setup_pipeline(self, task="text-generation", model="gpt2"):
+        """
+        Sets up the HuggingFace pipeline for a specified task and model.
+        """
+        if not self.is_huggingface or not self.is_torch:
+            print("HuggingFace and PyTorch are required but not properly installed.")
+            return None
+
+        from transformers import pipeline
+        try:
+            print(f"Initializing HuggingFace pipeline for task: {task}, model: {model}")
+            return pipeline(task, model=model, framework="pt")
+        except Exception as e:
+            print(f"Error initializing HuggingFace pipeline: {e}")
+            return None
+
     def run_sentiment_analysis(self):
         if not (self.is_huggingface and self.is_torch):
             print("The minimal software is not installed. Please check that PyTorch and HuggingFace are installed.")
@@ -179,6 +195,6 @@ class HuggingFaceAI:
         self.run_chatbot()
 
 
-# if __name__ == "__main__":
-#     ai = HuggingFaceAI()
-#     ai.main()
+if __name__ == "__main__":
+    ai = HuggingFaceAI()
+    ai.main()
