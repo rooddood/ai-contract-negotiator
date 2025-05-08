@@ -17,7 +17,7 @@ class HuggingFaceAI:
                 print("Apple Metal MPS acceleration ok.")
             else:
                 print("Your version of Pytorch does not support MPS, Pytorch will be slow.")
-        except:
+        except ImportError:
             print("Pytorch is not installed. Please install pytorch!")
 
         try:
@@ -25,7 +25,7 @@ class HuggingFaceAI:
             print(f"MLX version: {mx.__version__}")
             self.is_mlx = True
             print("Apple MLX framework is installed ok")
-        except:
+        except ImportError:
             print("MLX is not installed, it's optional, so this is not a fatal error.")
 
         try:
@@ -37,7 +37,7 @@ class HuggingFaceAI:
                 print("You have not installed the metal drivers, tensorflow will be slow")
             else:
                 print(f"GPU support ok: {devs}")
-        except:
+        except ImportError:
             print("Tensorflow not installed, but it's optional, so this is not a fatal error.")
 
         try:
@@ -45,14 +45,14 @@ class HuggingFaceAI:
             self.is_jax = True
             device_type = jax.devices()[0].device_kind
             print(f"JAX is installed and is using: {device_type}, ok")
-        except:
+        except ImportError:
             print("JAX is not installed, it's optional, so this is not a fatal error.")
 
         try:
             import transformers
             print(f"Transformers version: {transformers.__version__}")
             self.is_huggingface = True
-        except Exception as e:
+        except ImportError as e:
             print(f"HuggingFace transformers is not installed. This won't work! {e}")
 
     def setup_pipeline(self, task="text-generation", model="gpt2"):
