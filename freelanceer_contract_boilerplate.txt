@@ -1,0 +1,26 @@
+------------------------------------------------------------------------
+**General Terms and Conditions**
+
+1.  **Independent Contractor Relationship:** The Freelancer is an independent contractor and not an employee of the Client.  This agreement does not create a partnership, joint venture, or agency relationship between the parties.
+
+2.  **Ownership of Work Product:** The Client shall own all right, title, and interest in and to the work product resulting from the services performed by the Freelancer under this Agreement, including all intellectual property rights.
+
+3.  **Confidentiality:** The Freelancer agrees to hold all confidential information of the Client in strict confidence and not to disclose such information to any third party without the Client's prior written consent.
+
+4.  **Termination:** This Agreement may be terminated by either party upon [Number] days written notice to the other party.  In the event of termination, the Freelancer shall be paid for all services performed up to the date of termination.
+
+5.  **Indemnification:** The Freelancer agrees to indemnify and hold the Client harmless from any and all claims, losses, damages, liabilities, costs, and expenses (including reasonable attorneys' fees) arising out of or relating to the Freelancer's performance of services under this Agreement.
+
+6.  **Governing Law:** This Agreement shall be governed by and construed in accordance with the laws of [State/Country].
+
+7.  **Entire Agreement:** This Agreement constitutes the entire agreement between the parties and supersedes all prior agreements and understandings, whether written or oral, relating to the subject matter of this Agreement.
+
+8.  **Payment Terms:** The Freelancer shall invoice the Client for services rendered, and payment shall be made within [Number] days of receipt of the invoice. Late payments may incur interest at a rate of [Rate]% per month.
+
+9.  **Non-Solicitation:** During the term of this Agreement and for a period of [Number] months thereafter, neither party shall solicit for employment or hire any employee or contractor of the other party without prior written consent.
+
+10.  **Force Majeure:** Neither party shall be liable for any failure or delay in performance under this Agreement due to causes beyond its reasonable control, including but not limited to acts of God, natural disasters, government actions, or labor disputes.
+
+11.  **Dispute Resolution:** Any disputes arising out of or relating to this Agreement shall be resolved through good faith negotiations between the parties. If the dispute cannot be resolved, it shall be submitted to mediation or binding arbitration in accordance with the rules of [Arbitration Organization].
+
+12.  **Severability:** If any provision of this Agreement is found to be invalid or unenforceable, the remaining provisions shall remain in full force and effect.

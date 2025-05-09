@@ -1,34 +1,58 @@
 import json
 from transformers import pipeline, GPT2Tokenizer
 import logging  # Import the logging module
+import os  # Add import for os
+from HuggingFaceAI import HuggingFaceAI  # Import the HuggingFaceAI class
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
+with open("./prompts/contract_gen_no_negotiate_prompt.txt", "r") as file:
+    PROMPT_TEMPLATE = file.read()
+
+with open("freelanceer_contract_boilerplate.txt", "r") as boilerplate_file:
+    BOILERPLATE_TEXT = boilerplate_file.read()
 
 class ContractNegotiatorAI:
     def __init__(self):
         """
         Initializes the ContractNegotiatorAI.
         """
+        self.huggingface_ai = HuggingFaceAI()  # Initialize HuggingFaceAI
         self.negotiation_pipeline = None
-        self.tokenizer = None  # Add tokenizer
+        self.tokenizer = None
 
-    def setup_pipeline(self):
+    def setup_pipeline(self, task="text-generation", model="gpt2"):
         """
-        Sets up the HuggingFace pipeline for text generation.
+        Sets up the HuggingFace pipeline for text generation using HuggingFaceAI.
         """
         try:
-            # Use a specific model and handle potential errors
-            model_name = "gpt2"
-            self.tokenizer = GPT2Tokenizer.from_pretrained(model_name)  # Load tokenizer
-            self.negotiation_pipeline = pipeline("text-generation", model=model_name)
-            logging.info("HuggingFace text-generation pipeline initialized successfully with gpt2.")
+            self.huggingface_ai.check_installed_software()  # Check required software
+            self.negotiation_pipeline = self.huggingface_ai.setup_pipeline(task=task, model=model)
+            if self.negotiation_pipeline:
+                from transformers import AutoTokenizer
+                self.tokenizer = AutoTokenizer.from_pretrained(model)  # Load tokenizer
+                logging.info(f"HuggingFace pipeline initialized successfully with model: {model}.")
+            else:
+                logging.error("Failed to initialize HuggingFace pipeline.")
         except Exception as e:
-            logging.error(f"Failed to initialize HuggingFace pipeline: {e}")
-            self.negotiation_pipeline = None  # Ensure pipeline is None on failure
+            logging.error(f"Error during pipeline setup: {e}")
+            self.negotiation_pipeline = None
             self.tokenizer = None
-            return  # Exit the setup method on failure
+
+    def select_model(self, task="text-generation", model="gpt2"):
+        """
+        Dynamically selects the model and task for the pipeline.
+
+        Args:
+            task (str): The task to perform (e.g., "text-generation", "text2text-generation").
+            model (str): The model to use (e.g., "gpt2", "google/flan-t5-large").
+        """
+        try:
+            self.setup_pipeline(task=task, model=model)
+            logging.info(f"Model selected: {model} for task: {task}.")
+        except Exception as e:
+            logging.error(f"Error selecting model: {e}")
 
     def truncate_prompt(self, prompt, max_length=1024):
         """
@@ -49,92 +73,60 @@ class ContractNegotiatorAI:
         tokenized_prompt = self.tokenizer.encode(prompt, truncation=True, max_length=max_length)
         return self.tokenizer.decode(tokenized_prompt)
 
-    def generate_contract(self, freelancer_data, hirer_data):
+    def generate_contract(self, freelancer_data, hirer_data, model_name="default_model"):
         """
-        Generates a contract based on the provided freelancer and hirer data using the pipeline.
-        Focuses on SOW, hours, and rate.
+        Generates a contract based on the provided freelancer and hirer data using the selected model.
         """
         if not self.negotiation_pipeline:
-            logging.error("Pipeline not initialized. Please call setup_pipeline() first.")
+            logging.error("Pipeline not initialized. Please call select_model() first.")
             return None
 
-        # Extract relevant information for the contract
-        job_title = hirer_data['job_description']['title']
-        job_description = hirer_data['job_description']['description']
-        required_skills = hirer_data['job_description']['required_skills']
-        estimated_duration_weeks = hirer_data['job_description']['estimated_duration_weeks']
-        hourly_rate = hirer_data['expected_terms']['hourly_rate']
-        expected_hours_per_week = hirer_data['expected_terms']['expected_hours_per_week']
-        budget = hirer_data['expected_terms']['budget']  # added
-        freelancer_name = freelancer_data['profile']['name']  # added
-        freelancer_title = freelancer_data['profile']['title']  # added
+        # Debugging: Log the PROMPT_TEMPLATE and data being passed
+        logging.debug(f"PROMPT_TEMPLATE: {PROMPT_TEMPLATE}")
+        logging.debug(f"Freelancer Data: {freelancer_data}")
+        logging.debug(f"Hirer Data: {hirer_data}")
 
-        prompt = f"""You are an expert contract writer. Based on the following information, draft a contract that works for both parties:
+        # Clean and validate the PROMPT_TEMPLATE
+        prompt_template_cleaned = PROMPT_TEMPLATE.strip()  # Remove unintended leading/trailing whitespace
 
-        Freelancer Name: {freelancer_name}
-        Freelancer Title: {freelancer_title}
+        # Insert freelancer_name separately
+        freelancer_name = freelancer_data.get('freelancer_name', 'Freelancer')
+        prompt = prompt_template_cleaned.replace("{freelancer_name}", freelancer_name)
 
-        Hirer Information:
-        Job Title: {job_title}
-        Job Description: {job_description}
-        Required Skills: {required_skills}
-        Estimated Duration: {estimated_duration_weeks} weeks
+        # Use string concatenation for the rest of the prompt
+        prompt = prompt.replace("{freelancer_title}", freelancer_data.get('freelancer_title', 'Professional'))
+        prompt = prompt.replace("{job_title}", hirer_data.get('job_description', {}).get('title', 'Unknown Job Title'))
+        prompt = prompt.replace("{job_description}", hirer_data.get('job_description', {}).get('description', 'No description provided.'))
+        prompt = prompt.replace("{required_skills}", ", ".join(hirer_data.get('job_description', {}).get('required_skills', [])))
+        prompt = prompt.replace("{estimated_duration_weeks}", str(hirer_data.get('job_description', {}).get('estimated_duration_weeks', 'Unknown')))
+        prompt = prompt.replace("{freelancer_hourly_rate}", str(freelancer_data.get('expected_terms', {}).get('hourly_rate', 'Not specified')))
+        prompt = prompt.replace("{freelancer_expected_hours_per_week}", str(freelancer_data.get('expected_terms', {}).get('expected_hours_per_week', 'Not specified')))
+        prompt = prompt.replace("{freelancer_additional_expenses}", ", ".join(
+            f"{key}: {value}" for key, value in freelancer_data.get('expected_terms', {}).get('additional_expenses', {}).items()
+        ) if freelancer_data.get('expected_terms', {}).get('additional_expenses') else "None")
+        prompt = prompt.replace("{hirer_hourly_rate}", str(hirer_data.get('expected_terms', {}).get('hourly_rate', 'Not specified')))
+        prompt = prompt.replace("{hirer_expected_hours_per_week}", str(hirer_data.get('expected_terms', {}).get('expected_hours_per_week', 'Not specified')))
+        prompt = prompt.replace("{hirer_budget}", str(hirer_data.get('expected_terms', {}).get('budget', 'Not specified')))
+        prompt = prompt.replace("{agreed_hourly_rate}", "TBD")
+        prompt = prompt.replace("{agreed_hours_per_week}", "TBD")
+        prompt = prompt.replace("{agreed_expenses}", "TBD")
 
-        Freelancer Proposed Terms:
-        Hourly Rate: {freelancer_data['expected_terms']['hourly_rate']}
-        Expected Hours Per Week: {freelancer_data['expected_terms']['expected_hours_per_week']}
-        Additional Expenses: {freelancer_data['expected_terms']['additional_expenses']}
-
-        Hirer Proposed Terms:
-        Hourly Rate: {hourly_rate}
-        Expected Hours Per Week: {expected_hours_per_week}
-        Budget: {budget}
-
-        Provide a detailed and structured contract that includes the following sections:
-
-        1.  **Scope of Work (SOW):** A clear description of the services to be provided by the freelancer, including specific tasks, deliverables, and timelines.  Incorporate the Job Description and Required Skills.
-        2.  **Terms of Service:**
-            * Hourly Rate: The agreed-upon hourly rate.
-            * Expected Hours: The expected number of hours per week.
-            * Project Duration: The estimated duration of the project.
-            * Payment Terms: How and when the freelancer will be paid.
-            * Expenses: Reimbursable expenses, if any.
-        3.  **Acceptance:** A section for both parties to sign and date.
-        """
+        logging.debug(f"Formatted Prompt: {prompt}")
 
         # Truncate the prompt to avoid exceeding the model's maximum sequence length
-        truncated_prompt = self.truncate_prompt(prompt)  # Use the class's tokenizer
-        if not truncated_prompt:
-            return None  # handle error in truncation
+        truncated_prompt = self.truncate_prompt(prompt)
 
-        try:
-            generated_text = self.negotiation_pipeline(truncated_prompt, max_new_tokens=800,
-                                                      num_return_sequences=1)[0]["generated_text"]
-        except Exception as e:
-            logging.error(f"Error generating contract: {e}")
-            return None
+        # Generate text using the selected model
+        generated_text = self.negotiation_pipeline(truncated_prompt, max_new_tokens=800, num_return_sequences=1)[0]['generated_text']
 
-        # Add boilerplate text
-        boilerplate_text = """
-        \n\n------------------------------------------------------------------------
-        **General Terms and Conditions**
+        # Save the generated contract to a text file
+        output_dir = "generated_contracts"
+        os.makedirs(output_dir, exist_ok=True)
+        output_file_path = os.path.join(output_dir, f"contract_{model_name}.txt")
+        with open(output_file_path, "w") as f:
+            f.write(generated_text)
 
-        1.  **Independent Contractor Relationship:** The Freelancer is an independent contractor and not an employee of the Client.  This agreement does not create a partnership, joint venture, or agency relationship between the parties.
-
-        2.  **Ownership of Work Product:** The Client shall own all right, title, and interest in and to the work product resulting from the services performed by the Freelancer under this Agreement, including all intellectual property rights.
-
-        3.  **Confidentiality:** The Freelancer agrees to hold all confidential information of the Client in strict confidence and not to disclose such information to any third party without the Client's prior written consent.
-
-        4.  **Termination:** This Agreement may be terminated by either party upon [Number] days written notice to the other party.  In the event of termination, the Freelancer shall be paid for all services performed up to the date of termination.
-
-        5.  **Indemnification:** The Freelancer agrees to indemnify and hold the Client harmless from any and all claims, losses, damages, liabilities, costs, and expenses (including reasonable attorneys' fees) arising out of or relating to the Freelancer's performance of services under this Agreement.
-
-        6.  **Governing Law:** This Agreement shall be governed by and construed in accordance with the laws of [State/Country].
-
-        7.  **Entire Agreement:** This Agreement constitutes the entire agreement between the parties and supersedes all prior agreements and understandings, whether written or oral, relating to the subject matter of this Agreement.
-        """
-
-        return generated_text + boilerplate_text
+        return generated_text
 
     def negotiate(self, freelancer_data, hirer_data):
         """
@@ -245,66 +237,53 @@ def test_negotiation():
     """
     Tests the ContractNegotiatorAI functionality using the provided JSON data.
     """
-    freelancer_data = {
-        "profile": {
-            "name": "Alice Smith",
-            "title": "Senior LLM Engineer",
-        },
-        "resume": {
-            "experience": [
-                {"title": "Software Engineer", "company": "Tech Inc.", "years": "2020-2023",
-                 "skills": ["Python", "LLMs", "APIs"]},
-                {"title": "Data Scientist", "company": "Data Corp.", "years": "2023-Present",
-                 "skills": ["Machine Learning", "Data Analysis", "Cloud Computing"]}
-            ],
-            "skills": ["Communication", "Problem-solving", "Negotiation"]
-        },
-        "expected_terms": {
-            "hourly_rate": 75,
-            "expected_hours_per_week": 20,
-            "additional_expenses": {"software_licenses": 50, "travel": 0},
-            # "minimum_acceptable_rate": 65,
-            # "maximum_weekly_capacity": 25,
-            # "preferred_project_length_weeks": [8, 16],
-            "payment_terms": "Net 30"
-        }
-    }
+    try:
+        with open("freelancer_data.json", "r") as freelancer_file:
+            freelancer_data = json.load(freelancer_file)
+    except Exception as e:
+        print(f"Error loading freelancer data: {e}")
+        freelancer_data = None
 
-    hirer_data = {
-        "project": {
-            "name": "LLM Integration for Marketing Platform",
-            "description": "...",
-            "priority": "High"
-        },
-        "job_description": {
-            "title": "LLM Integration Specialist",
-            "description": "Seeking a freelancer to integrate and fine-tune LLMs for a new application.",
-            "required_skills": ["Python", "LLMs", "API Development", "Cloud Platforms"],
-            "estimated_duration_weeks": 12
-        },
-        "expected_terms": {
-            "hourly_rate": 60,
-            "expected_hours_per_week": 15,
-            "budget": 12000,
-            # "flexibility_on_hours": True,
-            # "payment_terms": ["Net 30", "Net 45"]
-        },
-        "budget": {
-            "total": 12000,
-            "maximum_hourly_rate": 70
-        }
-    }
+    try:
+        with open("hirer_data.json", "r") as hirer_file:
+            hirer_data = json.load(hirer_file)
+    except Exception as e:
+        print(f"Error loading hirer data: {e}")
+        hirer_data = None
 
     negotiator = ContractNegotiatorAI()
-    negotiator.setup_pipeline()  # Initialize the pipeline
 
-    # Generate and Print Contract
+    try:
+        negotiator.setup_pipeline()  # Initialize the pipeline
+    except Exception as e:
+        print(f"Error setting up pipeline: {e}")
+
+    # Test default model
+    # try:
     contract = negotiator.generate_contract(freelancer_data, hirer_data)
     if contract:
         print("\nGenerated Contract:")
         print(contract)
     else:
         print("Failed to generate contract.")
-        
+
+    # Test text2text-generation model
+    negotiator.select_model(task="text2text-generation", model="google/flan-t5-large")
+    contract_text2text = negotiator.generate_contract(freelancer_data, hirer_data, model_name="google_flan_t5_large")
+    if contract_text2text:
+        print("\nGenerated Contract using text2text-generation model:")
+        print(contract_text2text)
+    else:
+        print("Failed to generate contract using text2text-generation model.")
+
+    # Test deepseek-ai/DeepSeek-V3 model
+    negotiator.select_model(task="text-generation", model="deepseek-ai/DeepSeek-V3")
+    contract_deepseek = negotiator.generate_contract(freelancer_data, hirer_data, model_name="deepseek_ai_DeepSeek_V3")
+    if contract_deepseek:
+        print("\nGenerated Contract using deepseek-ai/DeepSeek-V3 model:")
+        print(contract_deepseek)
+    else:
+        print("Failed to generate contract using deepseek-ai/DeepSeek-V3 model.")
+
 if __name__ == "__main__":
     test_negotiation()

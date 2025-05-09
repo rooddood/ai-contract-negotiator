@@ -188,11 +188,87 @@ class HuggingFaceAI:
                 print(f"History cut from {old_shape} to {history.shape}")
             print(f"D_GPT: {reply_text}")
 
+    def run_text2text_generation(self):
+        if not (self.is_huggingface and self.is_torch):
+            print("The minimal software is not installed. Please check that PyTorch and HuggingFace are installed.")
+            return
+
+        from transformers import pipeline, AutoTokenizer, AutoModelForSeq2SeqLM
+
+        print("Initializing text2text-generation pipeline with google/flan-t5-large model...")
+        try:
+            # Using pipeline as a high-level helper
+            pipe = pipeline("text2text-generation", model="google/flan-t5-large")
+            print("Pipeline initialized successfully.")
+
+            # Example usage of the pipeline
+            input_text = "Translate English to French: How are you?"
+            result = pipe(input_text)
+            print(f"Pipeline output: {result}")
+
+            # Loading model and tokenizer directly
+            tokenizer = AutoTokenizer.from_pretrained("google/flan-t5-large")
+            model = AutoModelForSeq2SeqLM.from_pretrained("google/flan-t5-large")
+            print("Model and tokenizer loaded successfully.")
+
+            # Example usage of the model and tokenizer
+            inputs = tokenizer(input_text, return_tensors="pt")
+            outputs = model.generate(**inputs)
+            decoded_output = tokenizer.decode(outputs[0], skip_special_tokens=True)
+            print(f"Direct model output: {decoded_output}")
+        except Exception as e:
+            print(f"Error initializing or using google/flan-t5-large model: {e}")
+
+    def run_deepseek_v3(self):
+        if not (self.is_huggingface and self.is_torch):
+            print("The minimal software is not installed. Please check that PyTorch and HuggingFace are installed.")
+            return
+
+        from transformers import pipeline, AutoTokenizer, AutoModelForCausalLM
+
+        print("Initializing text-generation pipeline with deepseek-ai/DeepSeek-V3-0324 model...")
+        try:
+            # Using pipeline as a high-level helper
+            messages = [
+                {"role": "user", "content": "Who are you?"},
+            ]
+            pipe = pipeline("text-generation", model="deepseek-ai/DeepSeek-V3-0324", trust_remote_code=True, device=-1)  # Force CPU mode
+            result = pipe(messages)
+            print(f"Pipeline output: {result}")
+
+            # Loading model and tokenizer directly
+            tokenizer = AutoTokenizer.from_pretrained("deepseek-ai/DeepSeek-V3-0324", trust_remote_code=True)
+            model = AutoModelForCausalLM.from_pretrained("deepseek-ai/DeepSeek-V3-0324", trust_remote_code=True)
+
+            # Fix rope_scaling configuration if needed
+            if hasattr(model.config, 'rope_scaling'):
+                rope_scaling = model.config.rope_scaling
+                if not isinstance(rope_scaling.get('factor', 1), float) or rope_scaling['factor'] < 1:
+                    rope_scaling['factor'] = 1.0  # Set a valid default
+                if not isinstance(rope_scaling.get('beta_fast', 1.0), float):
+                    rope_scaling['beta_fast'] = 1.0
+                if not isinstance(rope_scaling.get('beta_slow', 1.0), float):
+                    rope_scaling['beta_slow'] = 1.0
+                print("Fixed rope_scaling configuration.")
+
+            print("Model and tokenizer loaded successfully.")
+
+            # Example usage of the model and tokenizer
+            input_text = "Who are you?"
+            inputs = tokenizer(input_text, return_tensors="pt")
+            outputs = model.generate(**inputs)
+            decoded_output = tokenizer.decode(outputs[0], skip_special_tokens=True)
+            print(f"Direct model output: {decoded_output}")
+        except Exception as e:
+            print(f"Error initializing or using deepseek-ai/DeepSeek-V3-0324 model: {e}")
+
     def main(self):
         self.check_installed_software()
         self.run_sentiment_analysis()
         self.run_benchmarks()
         self.run_chatbot()
+        self.run_text2text_generation()
+        self.run_deepseek_v3()
 
 
 if __name__ == "__main__":

@@ -1,0 +1,105 @@
+You are an expert contract writer. Based on the following information, draft a contract that works for both parties:
+
+Freelancer Name: {freelancer_name}
+Freelancer Title: {freelancer_title}
+
+Hirer Information:
+Job Title: {job_title}
+Job Description: {job_description}
+Required Skills: {required_skills}
+Estimated Duration: {estimated_duration_weeks} weeks
+
+Freelancer Proposed Terms:
+Hourly Rate: {freelancer_hourly_rate}
+Expected Hours Per Week: {freelancer_expected_hours_per_week}
+Additional Expenses: {freelancer_additional_expenses}
+
+Hirer Proposed Terms:
+Hourly Rate: {hirer_hourly_rate}
+Expected Hours Per Week: {hirer_expected_hours_per_week}
+Budget: {hirer_budget}
+
+OUTPUT
+Provide a detailed and structured contract that includes the following sections:
+
+- Scope of Work (SOW):
+    - A clear description of the services to be provided by the freelancer, including specific tasks, deliverables, and timelines.  
+    - Incorporate the Job Description and Required Skills.
+- Terms of Service:
+    - Hourly Rate: The agreed-upon hourly rate.
+    - Expected Hours: The expected number of hours per week.
+    - Project Duration: The estimated duration of the project.
+    - Payment Terms: How and when the freelancer will be paid.
+    - Expenses: Reimbursable expenses, if any.
+- Acceptance:
+    - A section for both parties to sign and date.
+    - Basically just lines and places to insert information, like a typical contract.
+
+Additional Instructions:
+- Ensure the contract is professional, concise, and legally sound.
+- Just return the Scope of work, Terms of service, and places for both parties to sign.
+- Avoid unnecessary repetition or verbose language.
+- Use clear and precise language to eliminate ambiguity.
+- Adhere strictly to the specified structure and include all required sections.
+- Do not include any content outside the specified contract elements.
+
+Hirer Metadata:
+{
+    "job_description": {
+        "title": "LLM Integration Specialist",
+        "description": "Seeking a freelancer to integrate and fine-tune LLMs for a new application.",
+        "required_skills": [
+            "Python",
+            "LLMs",
+            "API Development",
+            "Cloud Platforms"
+        ],
+        "estimated_duration_weeks": 12
+    },
+    "expected_terms": {
+        "hourly_rate": 60,
+        "expected_hours_per_week": 15,
+        "budget": 12000
+    }
+}
+
+Freeelancer Metadata:
+{
+    "resume": {
+        "experience": [
+            {
+                "title": "Software Engineer",
+                "company": "Tech Inc.",
+                "years": "2020-2023",
+                "skills": [
+                    "Python",
+                    "LLMs",
+                    "APIs"
+                ]
+            },
+            {
+                "title": "Data Scientist",
+                "company": "Data Corp.",
+                "years": "2023-Present",
+                "skills": [
+                    "Machine Learning",
+                    "Data Analysis",
+                    "Cloud Computing"
+                ]
+            }
+        ],
+        "skills": [
+            "Communication",
+            "Problem-solving",
+            "Negotiation"
+        ]
+    },
+    "expected_terms": {
+        "hourly_rate": 75,
+        "expected_hours_per_week": 20,
+        "additional_expenses": {
+            "software_licenses": 50,
+            "travel": 0
+        }
+    }
+}

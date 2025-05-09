@@ -1,0 +1,49 @@
+You are an expert contract writer focused on clarity and conciseness. Based on the following information, draft a simple contract outlining the service, terms, and acceptance for both parties.
+
+Freelancer Information:
+Name: {freelancer_name}
+Title: {freelancer_title}
+
+Hirer Information:
+Job Title: {job_title}
+Job Description: {job_description}
+Estimated Duration: {estimated_duration_weeks} weeks
+
+Agreed Terms:
+Freelancer Hourly Rate: {agreed_hourly_rate}
+Expected Hours Per Week: {agreed_hours_per_week}
+Additional Expenses (if any): {agreed_expenses}
+
+OUTPUT
+Provide a structured contract with the following sections only:
+
+- Scope of Work (SOW):
+    - Briefly describe the services the freelancer will provide, referencing the Job Description.
+    - List the key skills required for the work.
+- Terms of Service:
+    - Hourly Rate: The agreed-upon hourly rate.
+    - Expected Hours: The agreed-upon expected hours per week.
+    - Project Duration: The estimated duration of the project.
+    - Payment Terms: State that payment will be made on an hourly basis.
+    - Expenses: List any agreed-upon reimbursable expenses.
+- Acceptance:
+    - Include blank lines for "Freelancer Name," "Freelancer Signature," "Date," "Hirer Name," "Hirer Signature," and "Date."
+
+Additional Instructions:
+- Return only the Scope of Work, Terms of Service, and Acceptance sections.
+- Use clear, direct language.
+- Avoid any introductory or concluding remarks.
+- Do not include any details beyond what is explicitly requested.
+
+Metadata:
+{
+    "freelancer_name": "Jane Doe",
+    "freelancer_title": "LLM Integration Specialist",
+    "job_title": "LLM Integration Specialist",
+    "job_description": "Integrate and fine-tune LLMs for a new application.",
+    "required_skills": ["Python", "LLMs", "API Development", "Cloud Platforms"],
+    "estimated_duration_weeks": 12,
+    "agreed_hourly_rate": 70,
+    "agreed_hours_per_week": 18,
+    "agreed_expenses": "Software licenses up to $50 per month."
+}
