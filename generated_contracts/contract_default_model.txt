@@ -47,3 +47,35 @@ Metadata:
     "agreed_hours_per_week": 18,
     "agreed_expenses": "Software licenses up to $50 per month."
 }
+
+..
+
+M.B.U.S.
+
+B.A...W/L.B.
+
+L.C.E.
+
+Somewhere Else
+
+R.W.
+
+Somewhere Else
+
+All About Software & Services
+
+Information on the Service
+
+Information on the Customer's Application
+
+Information on the Services provided from the Service Provider
+
+Information on the Fees charged in relation to the Services.
+
+Information on the Customer's Interest in the Services.
+
+Information on which Businesses require that a "freelancer" is appointed in order to provide the services for which the fee is charged.
+
+Information on how the Service can be used to conduct business.
+
+What is Information on the Freelancer?
