@@ -1,5 +1,7 @@
 # ai-contract-negotiator
 
+Contributors can find more information on the current status of this project [here.](https://docs.google.com/document/d/1UkquQaXhuip0hjgGxJyqhRSuuH1hlVKdmIUohTOCW4o/edit?tab=t.0#heading=h.6jidvsd9f6nt)
+
 # Setup
 ## Need Python 3.12.0
 pyenv install -v 3.12.0
