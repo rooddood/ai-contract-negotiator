@@ -6,21 +6,30 @@ Contributors can find more information on the current status of this project [he
 
 # Setup
 ## Need Python 3.12.0
+```bash
 pyenv install -v 3.12.0
+```
 
-## Optionally set it as the global pyhton
+## Optionally set it as the global python
+```bash
 pyenv global 3.12.0
+```
 
 ## Create env and activate
+```bash
 python3.12 -m venv venv
 source venv/bin/activate
-pip install -r huggingface_test_requirements.txt 
-
+pip install -r huggingface_test_requirements.txt
+```
 
 # Running Tool
 ## Test of huggingface model alone
+```bash
 python HuggingFaceAI.py
+```
 
 ## Contract negotiator implementation
+```bash
 python ContractNegotiatorAI.py
+```
 
