@@ -1,5 +1,7 @@
 # ai-contract-negotiator
 
+This tool is designed to explore the use of different models for automatic contract negotiation and generation. It leverages large language models (LLMs) from Hugging Face to facilitate these tasks.
+
 Contributors can find more information on the current status of this project [here.](https://docs.google.com/document/d/1UkquQaXhuip0hjgGxJyqhRSuuH1hlVKdmIUohTOCW4o/edit?tab=t.0#heading=h.6jidvsd9f6nt)
 
 # Setup
@@ -22,10 +24,3 @@ python HuggingFaceAI.py
 ## Contract negotiator implementation
 python ContractNegotiatorAI.py
 
-
-# Need to set api key to use external apis:
-export GOOGLE_API_KEY='YOUR_GOOGLE_API_KEY'  # Replace with your key
-# or
-export OPENAI_API_KEY='YOUR_OPENAI_API_KEY'
-# or
-export ANTHROPIC_API_KEY='YOUR_ANTHROPIC_API_KEY'
