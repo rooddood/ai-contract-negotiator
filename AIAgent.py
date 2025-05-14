@@ -3,6 +3,8 @@ import json  # Added import for json
 from typing import Dict, Optional
 from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline  # Added imports for Hugging Face
 import torch  # Added import for PyTorch
+from openai import OpenAI  # Added import for OpenAI client
+from pydantic import BaseModel, Field  # Added Field for explicit schema definitions
 
 class AIAgent:
     """
@@ -87,29 +89,46 @@ class AIAgent:
         else:
             raise ValueError(f"Provider '{self.provider}' is not supported.  Choose 'openai', 'google', 'anthropic', or 'huggingface'.")
 
-    def get_response(self, prompt: str, model_name: str = None, **kwargs) -> str:
+    def get_response(self, prompt: str, model_name: str = None, structured: bool = False, output_format: Optional[BaseModel] = None, **kwargs) -> str:
         """
         Gets a response from the LLM based on the provider.
 
         Args:
             prompt (str): The prompt to send to the LLM.
-            model_name (str, optional): The name of the specific model to use (e.g., 'gpt-3.5-turbo', 'gemini-pro', 'claude-3', 'deepseek-llm-7b-chat').
-                                        If None, a default model for the provider will be used.  Required for HuggingFace.
-            **kwargs:  Additional keyword arguments to pass to the provider's API.
+            model_name (str, optional): The name of the specific model to use (e.g., 'gpt-3.5-turbo', 'gpt-4.1').
+                                        If None, a default model for the provider will be used.
+            structured (bool): Whether to parse the response into a structured format (e.g., SOW).
+            output_format (Optional[BaseModel]): The Pydantic model to use for structured parsing.
+            **kwargs: Additional keyword arguments to pass to the provider's API.
         Returns:
-            str: The response from the LLM.
+            str or BaseModel: The response from the LLM, either as plain text or a structured object.
         """
         if self.provider == 'openai':
             if not model_name:
-                model_name = "gpt-3.5-turbo"  # Default model
-            response = self.client.chat.completions.create(
-                model=model_name,
-                messages=[
-                    {"role": "user", "content": prompt}
-                ],
-                **kwargs
-            )
-            return response.choices[0].message.content
+                model_name = "gpt-4.1"  # Default model for OpenAI
+            if structured and output_format:
+                # Temporarily disable structured response parsing
+                # response = self.client.responses.parse(
+                #     model=model_name,
+                #     input=[
+                #         {"role": "system", "content": "Generate a structured SOW based on the input."},
+                #         {"role": "user", "content": prompt},
+                #     ],
+                #     text_format=output_format,
+                #     **{k: v for k, v in kwargs.items() if k != "max_tokens"}  # Exclude max_tokens
+                # )
+                # return response.output_parsed
+                raise NotImplementedError("Structured response parsing is temporarily disabled.")
+            else:
+                # Use standard text generation (remove max_tokens)
+                response = self.client.responses.create(
+                    model=model_name,
+                    input=[
+                        {"role": "user", "content": prompt}
+                    ],
+                    **{k: v for k, v in kwargs.items() if k != "max_tokens"}  # Exclude max_tokens
+                )
+                return response.output_text
         elif self.provider == 'google':
             if not model_name:
                 model_name = 'gemini-pro'
@@ -122,7 +141,6 @@ class AIAgent:
             response = self.client.messages.create(
                 model=model_name,
                 prompt=prompt,
-                max_tokens=1000,  # Or some reasonable default
                 **kwargs
             )
             return response.content[0].text
@@ -141,6 +159,39 @@ class AIAgent:
             # return self.tokenizer.decode(outputs[0], skip_special_tokens=True)
         else:
             raise ValueError(f"Provider '{self.provider}' is not supported.")
+
+class SOW(BaseModel):
+    """Defines a structured response format for a Statement of Work (SOW)."""
+    job_type: str = Field(..., description="The specific job type.")
+    persona: str = Field(..., description="The name of the user persona.")
+    sow_title: str = Field(..., description="A brief, descriptive title for the SOW.")
+    introduction: str = Field(..., description="A short paragraph providing context.")
+    objectives: list[str] = Field(..., description="An array of clearly stated, measurable objectives.")
+    scope_of_work: list[str] = Field(..., description="An array of specific tasks and deliverables included.")
+    deliverables: list[str] = Field(..., description="An array of tangible outputs.")
+    timeline_milestones: dict[str, str] = Field(..., description="An object where keys are milestone names and values are estimated completion dates (YYYY-MM-DD).")
+    acceptance_criteria: list[str] = Field(..., description="An array of criteria for deliverable acceptance.")
+    reporting_communication: str = Field(..., description="A string describing reporting frequency and methods.")
+    assumptions: list[str] = Field(..., description="An array of critical assumptions.")
+    exclusions: list[str] = Field(..., description="An array of tasks or deliverables NOT included.")
+
+    class Config:
+        json_schema_extra = {  # Updated from schema_extra to json_schema_extra
+            "required": [
+                "job_type",
+                "persona",
+                "sow_title",
+                "introduction",
+                "objectives",
+                "scope_of_work",
+                "deliverables",
+                "timeline_milestones",
+                "acceptance_criteria",
+                "reporting_communication",
+                "assumptions",
+                "exclusions"
+            ]
+        }
 
 def load_data(file_path: str) -> Dict:
     """Loads data from a JSON file."""
