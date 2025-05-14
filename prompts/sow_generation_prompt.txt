@@ -1,0 +1,70 @@
+You are an expert Statement of Work (SOW) generator. 
+Your goal is to create structured SOW data in JSON format based on minimal input, considering different user personas and job types across various industries.
+
+For each combination of **Job Type** and **User Persona** (defined below), generate a JSON object representing a sample SOW. All generated JSON objects should be contained within a single JSON array.
+
+Each JSON object should have the following keys:
+* `job_type`: The specific job type.
+* `persona`: The name of the user persona.
+* `sow_title`: A brief, descriptive title for the SOW.
+* `introduction`: A short paragraph providing context.
+* `objectives`: An array of clearly stated, measurable objectives.
+* `scope_of_work`: An array of specific tasks and deliverables included.
+* `deliverables`: An array of tangible outputs.
+* `timeline_milestones`: An object where keys are milestone names and values are estimated completion dates (YYYY-MM-DD).
+* `acceptance_criteria`: An array of criteria for deliverable acceptance.
+* `reporting_communication`: A string describing reporting frequency and methods.
+* `assumptions`: An array of critical assumptions.
+* `exclusions`: An array of tasks or deliverables NOT included.
+
+**Formatting and Instructions:**
+1. **Output Structure:** All JSON objects must be contained within a single JSON array. For example:
+   ```json
+   [
+       { "job_type": "Example Job Type", "persona": "Example Persona", ... },
+       { "job_type": "Another Job Type", "persona": "Another Persona", ... }
+   ]
+   ```
+2. **Field Content:** Keep the content within each field concise but informative. Use professional language suitable for business contexts.
+3. **Consistency:** Ensure consistent formatting, capitalization, and structure across all JSON objects.
+4. **Date Format:** Use the `YYYY-MM-DD` format for all dates in the `timeline_milestones` field.
+5. **Avoid Redundancy:** Do not repeat identical content across different JSON objects unless necessary.
+
+**Job Types:**
+* **Technology:**
+  * "Software Development: Building a customer relationship management (CRM) system."
+  * "Network Administration: Setting up and configuring a new office network."
+  * "Cybersecurity Consulting: Conducting a security audit and providing recommendations."
+  * "IT Support: Providing ongoing technical support for employee workstations."
+  * "Data Migration: Migrating data from an old server to a new cloud-based platform."
+  * "Cloud Infrastructure: Designing and deploying a scalable cloud architecture."
+  * "AI/ML Development: Creating a machine learning model for predictive analytics."
+* **Marketing:**
+  * "Digital Marketing: Running a social media advertising campaign."
+  * "SEO Optimization: Improving website search engine rankings."
+  * "Content Creation: Developing blog posts and video content."
+  * "Brand Strategy: Crafting a comprehensive brand identity."
+* **Sales:**
+  * "CRM Implementation: Setting up a sales pipeline in a CRM tool."
+  * "Sales Training: Conducting workshops for sales teams."
+  * "Lead Generation: Developing a strategy for acquiring new leads."
+* **Other Industries:**
+  * "Human Resources: Implementing an employee onboarding program."
+  * "Finance: Automating financial reporting processes."
+  * "Operations: Streamlining supply chain logistics."
+
+**User Personas:**
+* "Efficient Manager": Focused on clear deliverables, timelines, and cost.
+* "Detail-Oriented Engineer": Interested in technical specs and thorough documentation.
+* "Budget-Conscious Startup Founder": Prioritizes essential features and budget.
+* "Risk-Averse Enterprise Architect": Emphasizes security and standards.
+* "Agile Project Lead": Values flexibility and iterative progress.
+* "Creative Marketer": Seeks innovative and visually appealing solutions.
+* "Data-Driven Analyst": Prefers metrics and measurable outcomes.
+* "Customer-Centric Sales Leader": Focused on client satisfaction and retention.
+* "Process-Oriented Operations Manager": Values efficiency and repeatable processes.
+* "Visionary Executive": Interested in long-term strategy and scalability.
+
+Generate **one** JSON object for **each** combination of Job Type and User Persona. 
+For example, one JSON object for "Software Development" and "Efficient Manager", another for "Digital Marketing" and "Creative Marketer", and so on.
+Then combine all of these generated JSON objects and combine them into one single json file called generated_sow_db.json
