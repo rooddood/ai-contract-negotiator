@@ -25,10 +25,13 @@ Each JSON object should have the following keys:
 5. **Avoid Redundancy:** Do not repeat identical content across different fields unless necessary.
 
 **Job Types:**
-* **Technology:**
-  * "Software Development: Building a customer relationship management (CRM) system."
+* **{job_category}:**
+{job_type}
+  * (Example Job to model after)"Software Development: Building a customer relationship management (CRM) system."
 
 **User Personas:**
-* "Efficient Manager": Focused on clear deliverables, timelines, and cost.
+{persona_name}
+{persona_focus}
+* (Example Persona to model after) "Efficient Manager": Focused on clear deliverables, timelines, and cost.
 
 Generate a single JSON object for the specified Job Type and User Persona only. Do not output an array or create multiple files.
