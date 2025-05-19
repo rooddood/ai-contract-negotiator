@@ -18,18 +18,11 @@ Each JSON object should have the following keys:
 * `exclusions`: An array of tasks or deliverables NOT included.
 
 **Formatting and Instructions:**
-1. **Output Structure:** Generate a separate JSON file for each job type. Each file should contain a single JSON array with all JSON objects for that job type. For example:
-   ```json
-   [
-       { "job_type": "Example Job Type", "persona": "Example Persona", ... },
-       { "job_type": "Example Job Type", "persona": "Another Persona", ... }
-   ]
-   ```
-2. **File Naming:** Name each file based on the job type, using snake_case. For example, `software_development.json` for "Software Development: Building a customer relationship management (CRM) system."
-3. **Field Content:** Keep the content within each field concise but informative. Use professional language suitable for business contexts.
-4. **Consistency:** Ensure consistent formatting, capitalization, and structure across all JSON objects.
-5. **Date Format:** Use the `YYYY-MM-DD` format for all dates in the `timeline_milestones` field.
-6. **Avoid Redundancy:** Do not repeat identical content across different JSON objects unless necessary.
+1. **Output Structure:** Output a single JSON object (not an array or list).
+2. **Field Content:** Keep the content within each field concise but informative. Use professional language suitable for business contexts.
+3. **Consistency:** Ensure consistent formatting, capitalization, and structure across all fields.
+4. **Date Format:** Use the `YYYY-MM-DD` format for all dates in the `timeline_milestones` field.
+5. **Avoid Redundancy:** Do not repeat identical content across different fields unless necessary.
 
 **Job Types:**
 * **Technology:**
@@ -37,15 +30,5 @@ Each JSON object should have the following keys:
 
 **User Personas:**
 * "Efficient Manager": Focused on clear deliverables, timelines, and cost.
-* "Detail-Oriented Engineer": Interested in technical specs and thorough documentation.
-* "Budget-Conscious Startup Founder": Prioritizes essential features and budget.
-* "Risk-Averse Enterprise Architect": Emphasizes security and standards.
-* "Agile Project Lead": Values flexibility and iterative progress.
-* "Creative Marketer": Seeks innovative and visually appealing solutions.
-* "Data-Driven Analyst": Prefers metrics and measurable outcomes.
-* "Customer-Centric Sales Leader": Focused on client satisfaction and retention.
-* "Process-Oriented Operations Manager": Values efficiency and repeatable processes.
-* "Visionary Executive": Interested in long-term strategy and scalability.
 
-Generate **one** JSON object for **each** combination of Job Type and User Persona. 
-For example, one JSON object for "Software Development" and "Efficient Manager", another for "Digital Marketing" and "Creative Marketer", and so on. Ensure each job type's JSON objects are saved in a separate JSON file.
+Generate a single JSON object for the specified Job Type and User Persona only. Do not output an array or create multiple files.

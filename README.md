@@ -33,3 +33,8 @@ python HuggingFaceAI.py
 python ContractNegotiatorAI.py
 ```
 
+## SOW Gen implementation
+```bash
+python SOWGenerator.py
+```
+

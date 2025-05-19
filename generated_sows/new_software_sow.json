@@ -1,0 +1,66 @@
+{
+  "job_type": "Software Development: Building a customer relationship management (CRM) system.",
+  "persona": "Efficient Manager",
+  "sow_title": "Statement of Work: CRM System Development",
+  "introduction": "This Statement of Work (SOW) outlines the agreement between [Client Company Name] and [Vendor Company Name] for the development of a custom Customer Relationship Management (CRM) system. This system will aim to streamline sales processes, improve customer engagement, and enhance data management.",
+  "objectives": [
+    "Develop a fully functional CRM system with core modules for contact management, lead tracking, opportunity management, and reporting.",
+    "Ensure seamless integration with existing [mention existing systems, e.g., email platform, marketing automation tool].",
+    "Provide a user-friendly interface accessible via web and mobile devices.",
+    "Deliver comprehensive training documentation and initial user training sessions.",
+    "Adhere to agreed-upon timelines and budget constraints."
+  ],
+  "scope_of_work": [
+    "Requirements gathering and analysis workshops.",
+    "System design and architecture planning.",
+    "Database design and implementation.",
+    "Front-end and back-end development of all core modules.",
+    "Integration with specified existing systems.",
+    "User acceptance testing (UAT) support.",
+    "Deployment and go-live support.",
+    "Creation of user manuals and training materials.",
+    "Conducting initial user training sessions."
+  ],
+  "deliverables": [
+    "Detailed requirements specification document.",
+    "System design document.",
+    "Database schema.",
+    "Fully functional CRM system (web and mobile access).",
+    "Integration with [mention existing systems].",
+    "User acceptance testing (UAT) test scripts and results.",
+    "Deployment package.",
+    "User manuals and training materials.",
+    "Completed user training sessions."
+  ],
+  "timeline_milestones": {
+    "Requirements Gathering Complete": "2025-06-15",
+    "System Design Approved": "2025-07-01",
+    "Core Modules Development Complete": "2025-09-30",
+    "Integration Complete": "2025-10-15",
+    "User Acceptance Testing Begins": "2025-10-22",
+    "UAT Sign-off": "2025-11-15",
+    "Deployment": "2025-11-30",
+    "Training Complete": "2025-12-15"
+  },
+  "acceptance_criteria": [
+    "All core modules function according to the agreed-upon specifications.",
+    "Successful integration with [mention existing systems] without errors.",
+    "System passes all defined user acceptance testing scenarios.",
+    "User interface is intuitive and meets accessibility standards.",
+    "All deliverables listed in this SOW are provided and approved by the client."
+  ],
+  "reporting_communication": "Weekly progress reports will be provided via email, including updates on completed tasks, upcoming milestones, and any potential risks or issues. Bi-weekly status meetings will be held virtually.",
+  "assumptions": [
+    "Client will provide timely feedback and approvals.",
+    "Access to necessary client systems and personnel will be granted as required.",
+    "The scope of work is clearly defined and any changes will be subject to a formal change request process.",
+    "Client's existing infrastructure meets the minimum requirements for the CRM system.",
+    "Standard business hours will be observed for communication and support."
+  ],
+  "exclusions": [
+    "Ongoing system maintenance and support beyond the initial deployment phase.",
+    "Customization or development of features not explicitly mentioned in the scope of work.",
+    "Data migration from legacy systems (unless specified in a separate agreement).",
+    "Third-party software licensing costs."
+  ]
+}
