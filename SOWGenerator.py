@@ -42,12 +42,13 @@ class SOWGenerator:
             self.prompt_template = f.read()
 
     def get_job_types_dict(self):
-        """Return job types as a dict: {category: [job_type_description, ...]}"""
+        """Return job types as a dict: {category: [(job_type, description), ...]}"""
         job_types = {}
         for _, row in self.job_types_df.iterrows():
             category = row['category'].strip()
-            desc = row['job_type_description'].strip()
-            job_types.setdefault(category, []).append(desc)
+            job_type = row['job_type'].strip()
+            description = row['description'].strip()
+            job_types.setdefault(category, []).append((job_type, description))
         return job_types
 
     def get_personas_list(self):
@@ -63,10 +64,11 @@ class SOWGenerator:
         """Return a formatted string of all job types grouped by category."""
         job_types = self.get_job_types_dict()
         lines = []
-        for category, descriptions in job_types.items():
+        for category, jobtype_tuples in job_types.items():
+            #TODO: Maybe comment this?
             lines.append(f"{category}:")
-            for desc in descriptions:
-                lines.append(f"  - {desc}")
+            for job_type, description in jobtype_tuples:
+                lines.append(f"  - {job_type}: {description}")
         return "\n".join(lines)
 
     def get_all_personas_str(self):
@@ -136,28 +138,31 @@ class SOWGenerator:
             raise ValueError(f"Unknown provider: {self.provider}")
         print("[INFO] SOW generation complete.")
 
-    def get_category_for_job_type(self, job_type):
-        """Return the category for a given job_type description."""
-        row = self.job_types_df[self.job_types_df['job_type_description'].str.strip() == job_type.strip()]
-        if not row.empty:
-            return row.iloc[0]['category']
-        # Fallback: try to extract category from job_type string if possible
-        for _, r in self.job_types_df.iterrows():
-            if job_type.strip().startswith(r['job_type_description'].split(':')[0]):
-                return r['category']
+    def get_category_for_job_type(self, job_type, description=None):
+        """Return the category for a given job_type and (optionally) description."""
+        if description is not None:
+            row = self.job_types_df[(self.job_types_df['job_type'].str.strip() == job_type.strip()) & (self.job_types_df['description'].str.strip() == description.strip())]
+            if not row.empty:
+                return row.iloc[0]['category']
+        else:
+            row = self.job_types_df[self.job_types_df['job_type'].str.strip() == job_type.strip()]
+            if not row.empty:
+                return row.iloc[0]['category']
         return "Unknown"
 
-    def generate_sow_for_job_and_persona(self, job_category, job_type, persona_name, persona_focus):
+    def generate_sow_for_job_and_persona(self, job_category, job_type, persona_name, persona_focus, description=None):
         """Generate a SOW for a specific job type and persona, including all job types and personas in the prompt, and category."""
         prompt = self.prompt_template
-        prompt = prompt.replace("{job_type}", job_type)
+        # If description is provided, use it in the prompt
+        if description:
+            job_type_str = f"{job_type}: {description}"
+        else:
+            job_type_str = job_type
+        prompt = prompt.replace("{job_type}", job_type_str)
         prompt = prompt.replace("{persona_name}", persona_name)
         prompt = prompt.replace("{persona_focus}", persona_focus)
         # Add category
         prompt = prompt.replace("{job_category}", job_category)
-        # # Add all job types and personas to the prompt
-        # prompt = prompt.replace("{all_job_types}", self.get_all_job_types_str())
-        # prompt = prompt.replace("{all_personas}", self.get_all_personas_str())
         self.generate_sow(prompt)
 
     def extract_json_from_text(self, text):
